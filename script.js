@@ -61,15 +61,38 @@ function updateCount(count) {
 noteForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
+  const text = noteInput.value.trim();
+
+  if (!text) {
+    errorMessage.textContent = "Please type a note first.";
+    return;
+  }
+
+  if (text.length > 200) {
+    errorMessage.textContent = "Notes must be 200 characters or fewer.";
+    return;
+  }
+
   const note = {
     id: Date.now().toString(),
-    text: noteInput.value.trim(),
+    text,
     category: noteCategory.value,
     createdAt: new Date().toLocaleString(),
   };
 
   notes.unshift(note);
   noteInput.value = "";
+  errorMessage.textContent = "";
+  render();
+});
+
+notesList.addEventListener("click", (event) => {
+  if (!event.target.classList.contains("delete-button")) {
+    return;
+  }
+
+  const noteId = event.target.dataset.noteId;
+  notes = notes.filter((note) => note.id !== noteId);
   render();
 });
 
